@@ -1,4 +1,4 @@
-import {Button, Form} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import React, {useState} from 'react';
 
 type SearchFormProps = {
@@ -18,20 +18,22 @@ const SearchForm = ({onSearch}: SearchFormProps) => {
     };
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formBasicTitle">
-                <Form.Label>Movie Title</Form.Label>
-                <Form.Control
-                    type="text"
-                    placeholder="Enter movie title"
-                    value={title}
-                    onChange={handleTitleChange}
-                />
-            </Form.Group>
-
-            <Button variant="primary" type="submit">
-                Search
-            </Button>
+        <Form onSubmit={handleSubmit} style={{marginBottom: 16}}>
+            <Row>
+                <Col md={6}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter movie title"
+                        value={title}
+                        onChange={handleTitleChange}
+                    />
+                </Col>
+                <Col>
+                    <Button variant="primary" type="submit">
+                        Search
+                    </Button>
+                </Col>
+            </Row>
         </Form>
     );
 };

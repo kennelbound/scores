@@ -42,7 +42,7 @@ function App() {
     return (
         <BrowserRouter basename={process.env.PUBLIC_URL}>
             <Navbar bg="light" expand="md">
-                <Navbar.Brand href="./">OMDb Search</Navbar.Brand>
+                <Navbar.Brand style={{paddingLeft: 16}} href="./">OMDb Search</Navbar.Brand>
                 <Navbar.Toggle/>
                 <Navbar.Collapse>
                     <Nav className="mr-auto">
@@ -56,8 +56,7 @@ function App() {
                     <ApiKeyForm/>
                 }/>
                 <Route path="/" element={
-                    <Container>
-                        <h1>Search</h1>
+                    <Container style={{paddingTop: 15}}>
                         <SearchForm onSearch={handleSearch}/>
                         {isSearching ? <Spinner animation="border" size="sm"/> :
                             <SearchResults titles={titles} error={error}/>}
