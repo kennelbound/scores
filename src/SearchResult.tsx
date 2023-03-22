@@ -1,5 +1,5 @@
 import {Badge, Col, Image, Row} from "react-bootstrap";
-import {OMDBTitle} from "./OMDB";
+import {OMDBResponse} from "./OMDB";
 
 const relabel = (s: string): string => {
     switch (s) {
@@ -19,17 +19,36 @@ const logo = (s: string): string => {
         case 'Metacritic':
             return './metacritic.png';
         default:
-            return './logo192.png';
+            return './64.png';
     }
 }
 
-function SearchResult({title}: { title: OMDBTitle }) {
-    const {Title, Year, Director, Actors, Poster, Awards, Ratings} = title;
+const imdbLink = (imdbId: string) => `https://www.imdb.com/title/${encodeURIComponent(imdbId)}/?ref_=fn_al_tt_1`;
+const rtlink = (title: string) => `https://www.rottentomatoes.com/search?search=${encodeURIComponent(title)}`;
+const mclink = (title: string) => `https://www.metacritic.com/search/all/${encodeURIComponent(title)}/results`;
+
+const link = (imdbID: string, title: string, source: string) => {
+    switch (source) {
+        case "Internet Movie Database":
+            return imdbLink(imdbID);
+        case 'Rotten Tomatoes':
+            return rtlink(title);
+        case 'Metacritic':
+            return mclink(title);
+        default:
+            return '#';
+    }
+}
+
+function SearchResult({title}: { title: OMDBResponse }) {
+    const {Title, Year, Director, Actors, Poster, Awards, Ratings, imdbID} = title;
     return (
         <>
             <Row>
                 <Col xs={12} sm={4} md={3} lg={2}>
-                    <Image src={Poster} fluid/>
+                    <a href={imdbLink(imdbID)} target='_blank' rel='noreferrer'>
+                        <Image src={Poster} fluid={true}/>
+                    </a>
                 </Col>
                 <Col>
                     <Row>
@@ -57,9 +76,12 @@ function SearchResult({title}: { title: OMDBTitle }) {
                     </Row>
                     {Ratings.map(({Source, Value}) => <Row>
                         <Col>
-                            <Image src={logo(Source)} style={{width: 45, paddingRight: 12}} title={relabel(Source)}/>
-                            <Badge style={{width: 70}}
-                                   bg='warning'>{Value}</Badge>
+                            <a href={link(imdbID, Title, Source)} target='_blank' rel='noreferrer'>
+                                <Image src={logo(Source)} style={{width: 45, paddingRight: 12}}
+                                       title={relabel(Source)}/>
+                                <Badge style={{width: 70}}
+                                       bg='warning'>{Value}</Badge>
+                            </a>
                         </Col>
                     </Row>)}
                 </Col>
