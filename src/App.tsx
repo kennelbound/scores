@@ -40,7 +40,7 @@ function App() {
     }
 
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
             <Navbar bg="light" expand="md">
                 <Navbar.Brand href="./">OMDb Search</Navbar.Brand>
                 <Navbar.Toggle/>
