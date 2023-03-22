@@ -42,11 +42,11 @@ function App() {
     return (
         <BrowserRouter>
             <Navbar bg="light" expand="md">
-                <Navbar.Brand href="/">OMDb Search</Navbar.Brand>
+                <Navbar.Brand href="./">OMDb Search</Navbar.Brand>
                 <Navbar.Toggle/>
                 <Navbar.Collapse>
                     <Nav className="mr-auto">
-                        <Nav.Link href="/config">Config</Nav.Link>
+                        <Nav.Link href="./config">Config</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
