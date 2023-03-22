@@ -26,6 +26,7 @@ const logo = (s: string): string => {
 const imdbLink = (imdbId: string) => `https://www.imdb.com/title/${encodeURIComponent(imdbId)}/?ref_=fn_al_tt_1`;
 const rtlink = (title: string) => `https://www.rottentomatoes.com/search?search=${encodeURIComponent(title)}`;
 const mclink = (title: string) => `https://www.metacritic.com/search/all/${encodeURIComponent(title)}/results`;
+const personlink = (name: string) => `https://www.imdb.com/search/name/?name=${encodeURIComponent(name)}`;
 
 const link = (imdbID: string, title: string, source: string) => {
     switch (source) {
@@ -56,34 +57,63 @@ function SearchResult({title}: { title: OMDBResponse }) {
                     </Row>
                     <Row>
                         <Col>
-                            Director: <Badge bg="primary">{Director}</Badge>
+                            <Row>
+                                <Col>
+                                    Ratings
+                                </Col>
+                            </Row>
+                            {Ratings.map(({Source, Value}) => <Row>
+                                <Col>
+                                    <a href={link(imdbID, Title, Source)} target='_blank' rel='noreferrer'>
+                                        <Image src={logo(Source)} style={{width: 45, paddingRight: 12}}
+                                               title={relabel(Source)}/>
+                                        <Badge style={{width: 70}}
+                                               bg='warning'>{Value}</Badge>
+                                    </a>
+                                </Col>
+                            </Row>)}
+                            <Row>
+                                <Col>
+                                    Awards:
+                                </Col>
+                            </Row>
+                            {Awards.split("&").map(award =>
+                                <Row>
+                                    <Col>
+                                        <Badge bg="info">{award}</Badge>
+                                    </Col>
+                                </Row>
+                            )}
+
+                        </Col>
+                        <Col>
+                            <Row>
+                                <Col>
+                                    Director:
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <a href={personlink(Director ?? '')} target='_blank' rel='noreferrer'>
+                                        <Badge bg="primary">{Director}</Badge>
+                                    </a>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    Primary Cast:
+                                </Col>
+                            </Row>
+                            {Actors.split(',').map(it => <Row>
+                                    <Col>
+                                        <a href={personlink(it)} target='_blank' rel='noreferrer'>
+                                            <Badge bg="secondary">{it}</Badge>
+                                        </a>
+                                    </Col>
+                                </Row>
+                            )}
                         </Col>
                     </Row>
-                    <Row>
-                        <Col>
-                            Primary Cast: {Actors.split(',').map(it => <Badge bg="secondary">{it}</Badge>)}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            Awards: <Badge bg="info">Awards{Awards}</Badge>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <b>Ratings</b>
-                        </Col>
-                    </Row>
-                    {Ratings.map(({Source, Value}) => <Row>
-                        <Col>
-                            <a href={link(imdbID, Title, Source)} target='_blank' rel='noreferrer'>
-                                <Image src={logo(Source)} style={{width: 45, paddingRight: 12}}
-                                       title={relabel(Source)}/>
-                                <Badge style={{width: 70}}
-                                       bg='warning'>{Value}</Badge>
-                            </a>
-                        </Col>
-                    </Row>)}
                 </Col>
             </Row>
             <hr/>
