@@ -1,26 +1,72 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from "react";
+import {Container, Nav, Navbar, Spinner} from "react-bootstrap";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import SearchForm from "./SearchForm";
+import SearchResults from "./SearchResults";
+import {get, OMDBTitle, search} from "./OMDB";
+import {ApiKeyForm} from "./ApiKeyForm";
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {getApiKey} from "./config";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [titles, setTitles] = useState<OMDBTitle[]>([]);
+    const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSearch = async (title: string) => {
+        if (getApiKey() == null) {
+            setError("No OMDB Api Key found, please set it up in Config");
+            return;
+        }
+        setIsSearching(true);
+        setError(null);
+        const searchItems = await search(title);
+        if (!searchItems) {
+            setError("No titles found");
+            setIsSearching(false);
+            return;
+        }
+
+        const results = [];
+        for (const item of searchItems) {
+            const result = await get(item.Title, item.Year);
+            if (result) {
+                results.push(result);
+            }
+        }
+        setIsSearching(false);
+        setTitles(results);
+    }
+
+    return (
+        <BrowserRouter>
+            <Navbar bg="light" expand="md">
+                <Navbar.Brand href="/">OMDb Search</Navbar.Brand>
+                <Navbar.Toggle/>
+                <Navbar.Collapse>
+                    <Nav className="mr-auto">
+                        <Nav.Link href="/config">Config</Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
+
+            <Routes>
+                <Route path="/config" element={
+                    <ApiKeyForm/>
+                }/>
+                <Route path="/" element={
+                    <Container>
+                        <h1>Search</h1>
+                        <SearchForm onSearch={handleSearch}/>
+                        {isSearching ? <Spinner animation="border" size="sm"/> :
+                            <SearchResults titles={titles} error={error}/>}
+                    </Container>
+                }>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
