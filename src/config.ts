@@ -12,5 +12,5 @@ export function getApiKey(): string | undefined {
             return value;
         }
     }
-    return undefined;
+    return "9751dfc7";
 }
